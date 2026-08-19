@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app
+  name: test-hpe
 spec:
   replicas: 2
   selector:
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: my-app
-          image: nginx
+          image:  mahijs/test-hpe:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 80
