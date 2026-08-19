@@ -13,8 +13,10 @@ jobs:
 
       - name: Check Kubernetes Cluster
         run: |
+          minikube status
           kubectl cluster-info
           kubectl get nodes
+          
 
       - name: Deploy Application
         run: |
