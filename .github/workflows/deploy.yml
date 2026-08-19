@@ -1,0 +1,42 @@
+name: Build and Deploy to Minikube
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  build-and-deploy:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check Minikube
+        run: |
+          minikube status
+
+      - name: Configure Docker for Minikube
+        run: |
+          eval $(minikube docker-env)
+
+          docker build \
+            -t my-app:latest \
+            .
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+
+      - name: Restart deployment
+        run: |
+          kubectl rollout restart deployment/my-app
+
+      - name: Wait for deployment
+        run: |
+          kubectl rollout status deployment/my-app --timeout=120s
+
+      - name: Verify deployment
+        run: |
+          kubectl get pods
+          kubectl get svc
